@@ -1,0 +1,13 @@
+Edmonds's algorithm is a c++ library of various maximum branching and maximum arborescence 
+algorithms (building on the work by Edmonds and Karp). It also contains a command line tool 
+with xml in- and output that uses the library.
+
+Documentation is found at the homepage: http://edmonds-alg.sourceforge.net
+The documentation can also be generated out of the sources included in this package. See the 
+file "INSTALL" for installation instructions.
+
+The directory layout of this package:
+
+src/     the c++ sources
+doc/     the docbook sources for the html documentation at the homepage
+

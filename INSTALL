@@ -1,0 +1,25 @@
+Documentation instructions are also found here:
+
+http://edmonds-alg.sourceforge.net/index.html#installation
+
+Requirements for edmonds-alg:
+
+* boost
+* libxml2 ( required for the command line app )
+* doxygen ( only for -DBUILD_DOXYGEN=ON )
+* xmlto ( only for -DBUILD_DOCROOT=ON )
+
+This package uses the program cmake for building and packaging the software.
+To install into the directory $HOME/inst run these commands:
+
+mkdir $HOME/inst
+cd edmonds-alg-0.9
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=$HOME/inst ..
+
+If you want to install the documentation too, you need to add the flags
+ 
+-DBUILD_DOXYGEN=ON  -DBUILD_DOCBOOK=ON
+
+to the cmake command line.

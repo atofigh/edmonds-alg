@@ -1,0 +1,19 @@
+body {
+        margin: 1em;
+        font-family: Verdana, Helvetica, Arial, sans-serif;
+}
+
+h1 {
+         background: #EEF;
+        border: #777	 solid thin;
+	padding: 0.5em;
+}
+
+.programlisting {
+    background: rgb(223,231,237);
+    font-size: small
+}
+
+
+
+
