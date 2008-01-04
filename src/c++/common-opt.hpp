@@ -424,7 +424,10 @@ OPTFUNCTION(const Matrix          &weights,
       };
 
     };
-      parent[root]=root;
+
+#ifdef MAX_SPANNING_ARBORESCENCE
+  parent[root]=root;
+#endif
 }
 
 #undef OPTFUNCTION
