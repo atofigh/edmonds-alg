@@ -133,7 +133,7 @@ get_cost(std::vector<unsigned>        &parent,
 
 
 /*
- * max_spanning_arborescence()
+ * max_spanning_arborescence_naive()
  *
  * It tests all possible parent vectors to find the one that has
  * maximum weight.
