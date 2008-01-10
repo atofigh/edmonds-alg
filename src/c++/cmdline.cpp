@@ -123,27 +123,9 @@ int main(int argc, char *argv[]) {
 	  std::cerr << std::endl << "error: no algorithm found" << std::endl;
 	  exit(EXIT_FAILURE);
 	}
-
-  xmlDocPtr doc_out = NULL;   
-  xmlNodePtr root_out = NULL;
-
-  doc_out = xmlNewDoc(BAD_CAST "1.0");
-  root_out = xmlNewNode(NULL, BAD_CAST "result");
-  xmlDocSetRootElement(doc_out, root_out);
-  char buff[256];
-
+  xmlFree(algorithm);
   double s = sum(m,num_vertices,root,parent);
-  snprintf(buff,256,"%f",s);  
-  xmlNewProp(root_out, BAD_CAST "sum", BAD_CAST buff );
-
-  for ( std::vector<unsigned>::const_iterator iter = parent.begin(); iter != parent.end(); ++iter ) {
-    snprintf(buff,256,"%i",*iter);
-    xmlNodePtr iedge = xmlNewChild(root_out, NULL, BAD_CAST "incomingedge", BAD_CAST buff);
-  }
-
-  xmlSaveFormatFileEnc("-",doc_out,"UTF-8",1);
-  xmlFreeDoc(doc_out);
-  xmlCleanupParser();
+  writeXML(s, parent );
 
   return EXIT_SUCCESS;
 }
