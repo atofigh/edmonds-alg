@@ -1,10 +1,19 @@
-#ifndef MAX_SPANNING_ARBORESCENCE_NAIVE_IMPL_HPP
-#define MAX_SPANNING_ARBORESCENCE_NAIVE_IMPL_HPP
-
-#include "max-spanning-arborescence-naive.hpp"
 #include <numeric>
 #include <set>
 #include <iostream>
+
+
+#ifdef MAX_SPANNING_ARBORESCENCE_NAIVE
+ #define OPTFUNCTION max_spanning_arborescence_naive
+#endif
+
+#ifdef OPTIMUM_BRANCHING_NAIVE
+ #define OPTFUNCTION optimum_branching_naive
+#endif
+
+#ifndef HELP_FUNCTIONS_NAIVE
+#define HELP_FUNCTIONS_NAIVE
+
             
 /*
  * next_graph()
@@ -131,16 +140,12 @@ get_cost(std::vector<unsigned>        &parent,
     return cost;
 }
 
+#endif /* HELP_FUNCTIONS_NAIVE */
 
-/*
- * max_spanning_arborescence_naive()
- *
- * It tests all possible parent vectors to find the one that has
- * maximum weight.
- */
+
 template<typename Real, class Matrix>
 void
-max_spanning_arborescence_naive(const Matrix          &weights,
+OPTFUNCTION(const Matrix          &weights,
                                 unsigned               num_vertices,
                                 unsigned               root,
                                 std::vector<unsigned> &parent)
@@ -154,7 +159,9 @@ max_spanning_arborescence_naive(const Matrix          &weights,
          next_graph(parent_copy, num_vertices, root))
         {
 
+#ifdef MAX_SPANNING_ARBORESCENCE_NAIVE
             if (is_spanning_arborescence(parent_copy, num_vertices, root))
+#endif
                 {
                     Real cost = get_cost<Real>(parent_copy, num_vertices,
                                                root, weights);
@@ -168,4 +175,7 @@ max_spanning_arborescence_naive(const Matrix          &weights,
         }
 }
 
-#endif /* MAX_SPANNING_ARBORESCENCE_NAIVE_IMPL_HPP */
+
+
+#undef OPTFUNCTION 
+

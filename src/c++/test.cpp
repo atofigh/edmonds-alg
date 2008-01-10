@@ -1,113 +1,77 @@
-#include "max-spanning-arborescence-naive.hpp"
+#include <cstdlib>
+#include <iostream>
+#include <cassert>
+#include <libxml/xpath.h>
+
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#include <libxml/relaxng.h>
+
 #include "max-spanning-arborescence.hpp"
+#include "max-spanning-arborescence-naive.hpp"
 #include "optimum-branching.hpp"
+#include "optimum-branching-naive.hpp"
+#include "config.h"
+#include "xml.hpp"
 
 #include <boost/multi_array.hpp>
-#include <iostream>
 #include <vector>
-#include <cstdlib>
-
-void fill( boost::multi_array<double,2> & m, unsigned & msize ) {
-  for ( boost::multi_array_types::index i = 0; i < msize ; ++ i) 
-    {
-      for ( boost::multi_array_types::index j = 0; j < msize; ++ j)
-	{
-	  m[i][j] = 3 * i + j; 
-	}
-    }
-  return;
-};  
-
-void print( boost::multi_array<double,2> & m, unsigned & msize ) {
-  for ( boost::multi_array_types::index i = 0; i < msize ; ++ i) 
-    {
-      for ( boost::multi_array_types::index j = 0; j < msize; ++ j)
-	{
-	  std::cout << 	  m[i][j] << " ";
-	}
-      std::cout << std::endl;
-    }
-  return;
-};  
+#include <getopt.h>
 
 
-void fillrandom( boost::multi_array<double,2> & m, unsigned & msize,   std::vector<double> & values  ) {
-
-  for ( boost::multi_array_types::index i = 0; i < msize ; ++ i) 
-    {
-      for ( boost::multi_array_types::index j = 0; j < msize; ++ j)
-	{
-          int random = int( (values.size() )*(rand()/(RAND_MAX + 1.0))); 
-	  m[i][j] = values[random];
-	}
-    }
-  return;
-};  
-
-void fillrandom2( boost::multi_array<double,2> & m, unsigned & msize,   std::vector<double> & values  ) {
-
-  for ( boost::multi_array_types::index i = 0; i < msize ; ++ i) 
-    {
-      for ( boost::multi_array_types::index j = 0; j < msize; ++ j)
-	{
-
-	  m[i][j] = int( (4 )*(rand()/(RAND_MAX + 1.0))) ;
-	}
-    }
-  return;
-};  
-
-
+int compareSum( boost::multi_array<double,2> &m,int num_vertices,int root,  std::vector<unsigned> parent1, std::vector<unsigned> parent2)
+{
+  double s1 = sum(m,num_vertices,root,parent1);
+  double s2 = sum(m,num_vertices,root,parent2);
+  if ( s1 == s2 )
+    return EXIT_SUCCESS;
+  else
+    return EXIT_FAILURE;
+}
 
 int main(int argc, char *argv[]) {
 
+  if ( argc != 2 ) 
+    {
+       std::cerr << "error: test program not started properly. Wrong number of arguments." <<  std::endl;
+       exit(EXIT_FAILURE); 
+    };
 
-    unsigned num_vertices = atoi(argv[1]);
-    //    unsigned num_vertices = 4;
-  unsigned root = 0;
-  boost::multi_array<double,2>  m(boost::extents[num_vertices][num_vertices]);
-  //  fill( m, num_vertices );
-  std::vector<double> v;
+  char * filename = argv[1];
+  FILE * f = fopen( filename, "r" );
+  if ( f == NULL )
+    {     
+      std::cerr << "Could not open the file  \"" << filename << "\""  <<  std::endl;
+      exit(EXIT_FAILURE);
+    };
 
-  v.push_back(2);
-  v.push_back(1);
-  v.push_back(3);
-  v.push_back(4);
-
-  //  m[0][2]=2;
-  // m[2][0]=1;
-
- for ( int j = 0; j < 100 ; j++ ) {
-  srand(j);
-       fillrandom2( m, num_vertices, v );
-  //  fill( m, num_vertices );
-       //         print(m, num_vertices );
+  int fd = fileno(f);
+  int root;
+  int num_vertices;
+  xmlChar * algorithm;
+  boost::multi_array<double,2> m;
+  parseEdmondsXML(fd, filename, m, root, num_vertices, &algorithm );
   std::vector<unsigned> parent(num_vertices);
-  std::vector<unsigned> parent2(num_vertices);
-  std::vector<unsigned> parent3(num_vertices);
+  std::vector<unsigned> parent_naive(num_vertices);
 
-  //   std::cout << "j=" << j << "started n2"  << std::endl;
-    //      max_spanning_arborescence<double>(m, num_vertices, root, parent);
-  //  }
-  //std::cout << "started naive"  << std::endl;
-      //      max_spanning_arborescence_naive<double>(m, num_vertices, root, parent2);
-   optimum_branching<double>(m, num_vertices, root, parent3);
+  if ( root == -1 ) { 
+	  std::cerr << std::endl << "non-root algorithm not implemented yet" << std::endl;
+	  exit(EXIT_FAILURE);
+  }
 
-
-   double sumn2  = sum(m,num_vertices,root,parent);
-
-   double sumnaive  = sum(m,num_vertices,root,parent2);
-
-   //  std::cout << "n=" << num_vertices << " j=" << j  << " sumn2=" << sumn2 << " sumnaive=" << sumnaive << std::endl;
-
-   if ( sumn2 != sumnaive ) {
-     std::cout << std::endl;
-    print(m, num_vertices );
-    std::cout << "num_vertices=" << num_vertices << " j=" << j  << " sumn2=" << sumn2 << " sumnaive=" << sumnaive << std::endl;
-     std::cout << std::endl;
-   };
-
- }
-
-  return EXIT_SUCCESS;
+  if ( ! xmlStrcmp( algorithm , (const xmlChar *) "msa" ) ) {  
+    max_spanning_arborescence<double>(m, num_vertices, root, parent);
+    max_spanning_arborescence_naive<double>(m, num_vertices, root, parent_naive);
+  } 
+  else 
+      if ( ! xmlStrcmp( algorithm , (const xmlChar *) "ob" ) ) {  
+	optimum_branching<double>(m, num_vertices, root, parent);
+	optimum_branching_naive<double>(m, num_vertices, root, parent_naive);
+      } 
+      else 
+	{
+	  std::cerr << std::endl << "error: no algorithm found" << std::endl;
+	  exit(EXIT_FAILURE);
+	}
+  return compareSum(m,num_vertices,root,parent,parent_naive);
 }

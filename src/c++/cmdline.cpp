@@ -11,76 +11,12 @@
 #include "max-spanning-arborescence.hpp"
 #include "optimum-branching.hpp"
 #include "config.h"
+#include "xml.hpp"
 
 #include <boost/multi_array.hpp>
 #include <vector>
 #include <getopt.h>
 
-
-
-static const char relaxngstr [] = "<?xml version=\"1.0\"?>\n"
-"<element xmlns=\"http://relaxng.org/ns/structure/1.0\" name=\"edmonds-alg-input\" datatypeLibrary=\"http://www.w3.org/2001/XMLSchema-datatypes\">\n"
-"  <attribute name=\"num_vertices\">\n"
-"    <data type=\"int\"/>\n"
-"  </attribute>\n"
-"  <choice>\n"
-"    <group>\n"
-"      <attribute name=\"algorithm\">\n"
-"        <value>msa</value>\n"
-"      </attribute>\n"
-"      <optional>\n"
-"        <attribute name=\"root\">\n"
-"          <data type=\"int\"/>\n"
-"        </attribute>\n"
-"      </optional>\n"
-"    </group>\n"
-"    <group>\n"
-"      <attribute name=\"algorithm\">\n"
-"        <value>ob</value>\n"
-"      </attribute>\n"
-"      <optional>\n"
-"        <attribute name=\"root\">\n"
-"          <data type=\"int\"/>\n"
-"        </attribute>\n"
-"      </optional>\n"
-"    </group>\n"
-"  </choice>\n"
-"  <element name=\"costmatrix\">\n"
-"    <oneOrMore>\n"
-"      <element name=\"row\">\n"
-"        <oneOrMore>\n"
-"          <element name=\"entry\">\n"
-"            <data type=\"double\"/>\n"
-"          </element>\n"
-"        </oneOrMore>\n"
-"      </element>\n"
-"    </oneOrMore>\n"
-"  </element>\n"
-  "</element>\n";
-
-void validateWithRelaxNG( xmlDocPtr doc_in ,const char * relaxngstr ) {
-  xmlRelaxNGParserCtxtPtr parserctxt;
-  size_t len = strlen(relaxngstr);
-  parserctxt = xmlRelaxNGNewMemParserCtxt(relaxngstr,len);
-  xmlRelaxNGSetParserErrors(parserctxt,(xmlRelaxNGValidityErrorFunc) fprintf, (xmlRelaxNGValidityWarningFunc) fprintf, stderr);
-  xmlRelaxNGPtr schema = NULL;
-  schema = xmlRelaxNGParse(parserctxt);
-  xmlRelaxNGFreeParserCtxt(parserctxt);
-  int ret;
-  xmlRelaxNGValidCtxtPtr validctxt;
-  validctxt = xmlRelaxNGNewValidCtxt(schema);
-  xmlRelaxNGSetValidErrors(validctxt, (xmlRelaxNGValidityErrorFunc) fprintf, (xmlRelaxNGValidityWarningFunc) fprintf, stderr);
-  ret = xmlRelaxNGValidateDoc(validctxt, doc_in);
-  if (ret > 0) {
-    printf("xml input fails to validate\n");
-    exit(EXIT_FAILURE);
-  }
-  if (ret < 0) {
-    printf("internal or API error\n");
-    exit(EXIT_FAILURE);
-  }
-  xmlRelaxNGFreeValidCtxt(validctxt);
-}
 
 void usage(){
   std::cout << std::endl 
@@ -101,7 +37,6 @@ void version(){
 }
 
 int main(int argc, char *argv[]) {
-
 
   int c;
   int option_index = 0;
@@ -129,7 +64,7 @@ int main(int argc, char *argv[]) {
 	  exit(EXIT_SUCCESS);
 	  break;
 	case 'R': 
-	  std::cout << relaxngstr;
+	  printRelaxng(); 
 	  exit(EXIT_SUCCESS);
 	  break;
 	default:
@@ -163,60 +98,11 @@ int main(int argc, char *argv[]) {
     {
       fd = fileno(stdin );
     }
-
-  LIBXML_TEST_VERSION;
-  xmlDocPtr doc_in = xmlReadFd(fd, filename, NULL, 0 );
-  if ( doc_in == 0 ) {
-	  std::cerr << "error: the input is not well formed XML"  <<  std::endl;
-	  exit(EXIT_FAILURE);
-  }
-
-  validateWithRelaxNG(doc_in, relaxngstr );
-
-  xmlNodePtr rootnode = xmlDocGetRootElement(doc_in);
-  if (rootnode == NULL) {
-    std::cerr << "error: xml input is not well formed" << std::endl;
-    exit(EXIT_FAILURE);
-  }
-
-  xmlNode *node1, *node2, *node3;
-  xmlChar * num_vertices_str = xmlGetProp(rootnode, (const xmlChar *) "num_vertices") ;
-  int num_vertices = atoi((const char * ) num_vertices_str  );
-  assert( num_vertices > 0 );
-  xmlChar * algorithm = xmlGetProp(rootnode, (const xmlChar *) "algorithm") ;
-  int root = -1;
-  if ( xmlHasProp(rootnode, (const xmlChar *) "root") != 0 ) { 
-    xmlChar * rootstr = xmlGetProp(rootnode, (const xmlChar *) "root") ;
-    root = atoi((const char * ) rootstr  );
-    assert( root >= 0 and root < num_vertices );
-  }
-
-  boost::multi_array<double,2>  m(boost::extents[num_vertices][num_vertices]);
-  bool m_filled = false;
-
-  for (node1 = rootnode->children; node1; node1 = node1->next) {
-     if (node1->type == XML_ELEMENT_NODE and   !xmlStrcmp( node1->name, (const xmlChar *) "costmatrix" )   ) {
-      boost::multi_array_types::index i = 0;
-      for (node2 = node1->children; node2; node2 = node2->next) {
-	if (node2->type == XML_ELEMENT_NODE and   !xmlStrcmp( node2->name, (const xmlChar *) "row" )   ) {
-          boost::multi_array_types::index j = 0;
-	  for (node3 = node2->children; node3; node3 = node3->next) {
-	    if (node3->type == XML_ELEMENT_NODE and  !xmlStrcmp( node3->name, (const xmlChar *) "entry" )  ) { 
-	      assert( i < num_vertices );            
-	      assert( j < num_vertices );            
-	      m[i][j] = xmlXPathCastNodeToNumber(node3);
-	      j++;
-	    }
-	  }
-          assert( j == num_vertices );
-	  i++;
-	}
-      }
-      assert( i == num_vertices );
-      m_filled = true;
-    }
-  }
-  assert( m_filled );
+  int root;
+  int num_vertices;
+  xmlChar * algorithm;
+  boost::multi_array<double,2> m;
+  parseEdmondsXML(fd, filename, m, root, num_vertices, &algorithm );
 
   std::vector<unsigned> parent(num_vertices);
 
@@ -257,7 +143,6 @@ int main(int argc, char *argv[]) {
 
   xmlSaveFormatFileEnc("-",doc_out,"UTF-8",1);
   xmlFreeDoc(doc_out);
-  xmlFreeDoc(doc_in);
   xmlCleanupParser();
 
   return EXIT_SUCCESS;

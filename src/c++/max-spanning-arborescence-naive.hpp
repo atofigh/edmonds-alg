@@ -49,6 +49,9 @@ max_spanning_arborescence_naive(const Matrix          &weights,
                                 unsigned               root,
                                 std::vector<unsigned> &parent);
 
-#include "max-spanning-arborescence-naive-impl.hpp"
+
+#define MAX_SPANNING_ARBORESCENCE_NAIVE
+#include "common-opt-naive.hpp"
+#undef MAX_SPANNING_ARBORESCENCE_NAIVE
 
 #endif /* MAX_SPANNING_ARBORESCENCE_NAIVE_HPP */

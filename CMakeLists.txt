@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.4.7)
 project(edmonds-alg)
 
+ENABLE_TESTING()
+
 set(COMMANDLINENAME edmonds-alg)
 SET(CPACK_PACKAGE_VERSION_MAJOR "0")
 SET(CPACK_PACKAGE_VERSION_MINOR "9")

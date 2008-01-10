@@ -1,0 +1,4 @@
+This directory contains input data files to the Edmonds's algorithm that are used for testing 
+and validating the implementation. The result from the Edmonds's algorithm is compared to the
+result from naive implementations. This testing is performed in the "make test" step during
+installation.
