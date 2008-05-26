@@ -196,7 +196,7 @@ OPTFUNCTION(const Matrix          &weights,
   std::vector< edgenode* > enVector;
 
   edge default_edge = {num_vertices, 0};
-  std::vector< edge > lambda(num_vertices); 
+  std::vector< edge > lambda(num_vertices, default_edge); 
   std::vector< edge > enter(num_vertices, default_edge); // num_vertices means the empty set
   std::vector< edgevector > I(num_vertices);
   std::vector< edgevector > cycle(num_vertices);
@@ -253,6 +253,7 @@ OPTFUNCTION(const Matrix          &weights,
       edgevector::iterator it = I[r].begin();
       Real cost = m[(*it).tail][(*it).head];
       ij = *it;
+      ++it;
       while ( it != I[r].end() ) 
 	{
 	if ( m[(*it).tail][(*it).head] > cost ) 
@@ -306,6 +307,7 @@ OPTFUNCTION(const Matrix          &weights,
               ++it5;
 	    }
           Real cost1 = m[ij.tail][ij.head] - mincost;
+          unsigned min_r = min[S.findset(uv.head)];
 #endif
 
 #ifdef MAX_SPANNING_ARBORESCENCE
@@ -346,8 +348,7 @@ OPTFUNCTION(const Matrix          &weights,
 	    }
 
 #ifdef OPTIMUM_BRANCHING
-          unsigned found = S.findset(uv.head);
-	  min[r]=min[found];
+	  min[r]=min_r;
 #endif
 	  enter[r]=default_edge;
 	  roots.push(r);
@@ -396,33 +397,47 @@ OPTFUNCTION(const Matrix          &weights,
       }
       assert( lambda[v].tail >= 0 and lambda[v].tail < num_vertices );
       assert( lambda[v].head >= 0 and lambda[v].head < num_vertices );
-      edgenode * en = enMatrix[lambda[v].tail][lambda[v].head];
-      assert( en != NULL );
-      std::list<edgenode *> P;
+      if (lambda[v].tail != num_vertices)
+        {
+            edgenode * en = enMatrix[lambda[v].tail][lambda[v].head];
+            assert( en != NULL );
+            std::list<edgenode *> P;
 
-      edgenode * oldnode = NULL;      
-      do
-	{
-	  P.push_front( en );
-          edgenode * parentnode = en->parent;
-	  for ( std::list<edgenode *>::iterator it = en->children.begin(); it != en->children.end(); ++it ) 
-	    {
-              if ( *it != oldnode ) 
-		{
-		  assert( (*it)->parent != NULL );
-		  (*it)->parent = NULL;              
-		  N.push_back( *it );
-		}
-	    };
-          enMatrix[en->e.tail][en->e.head] = NULL;
-          oldnode = en;
-          en = parentnode;
-        } while ( en != NULL  );
-      for ( std::list<edgenode *>::iterator it = P.begin(); it != P.end(); ++it )  
-      {
-        delete *it;
-      };
+            edgenode * oldnode = NULL;      
+            do
+                {
+                    P.push_front( en );
+                    edgenode * parentnode = en->parent;
+                    for ( std::list<edgenode *>::iterator it = en->children.begin(); it != en->children.end(); ++it ) 
+                        {
+                            if ( *it != oldnode ) 
+                                {
+                                    assert( (*it)->parent != NULL );
+                                    (*it)->parent = NULL;              
+                                    N.push_back( *it );
+                                }
+                        };
+                    enMatrix[en->e.tail][en->e.head] = NULL;
+                    oldnode = en;
+                    en = parentnode;
+                } while ( en != NULL  );
+            for ( std::list<edgenode *>::iterator it = P.begin(); it != P.end(); ++it )  
+                {
+                    if ((*it)->parent == 0)
+                        {
+                            for (std::vector<edgenode *>::iterator it2 = N.begin(); it2 != N.end(); ++it2)
+                                {
+                                    if (*it2 == *it)
+                                        {
+                                            N.erase(it2);
+                                            break;
+                                        }
+                                }
+                        }
 
+                    delete *it;
+                };
+        }  
     };
 
 #ifdef MAX_SPANNING_ARBORESCENCE
