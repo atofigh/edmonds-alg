@@ -1,0 +1,171 @@
+<HTML>
+
+<HEAD>
+<TITLE>Edmonds's Algorithm</TITLE>
+</HEAD>
+
+<BODY bgcolor="white" text="black">
+
+<TABLE width="75%" align="center">
+<TR>
+<TD>
+<DIV align="justify">
+
+
+
+<H1>Edmonds's Algorithm</H1>
+
+<H2>1. Introduction</H2>
+
+<p>
+The package <em>edmonds-alg</em> contains a C++-implementation of
+Edmonds's optimum branching algorithm as described by Tarjan in
+1977. The code is licensed under the opensource
+
+<a href="http://en.wikipedia.org/wiki/MIT_License">
+MIT license.
+</a>
+
+</p>
+
+
+<p>
+A branching in a directed graph is defined as a set of directed edges
+that contain no cycles and such that no two edges are directed towards
+the same vertex. Note that this is equivalent to a forest of rooted
+trees. Given weights on the edges of a directed graph, we define a
+maximum branching as a branching such that the sum of the weights of
+its edges is maximal. Since finding a maximum branching is equivalent
+to finding a minimum branching, we often speak of optimum branchings
+instead.
+</p>
+
+
+<p>
+In 1967, Edmonds gave an 
+
+<a href="http://en.wikipedia.org/wiki/Edmonds's_algorithm">
+algorithm
+</a>
+
+for finding an optimum branching in a directed graph (others
+discovered similar algorithms independantly at approximately the same
+time). In 1977, Tarjan gave the first description of an efficient
+implementation of Edmonds's algorithm.
+</p>
+
+
+<H2>2. Requirements</H2>
+
+<p>
+In order to maximize code reuse, the implementation is built on top of
+concepts in the
+
+<a href="http://www.boost.org/doc/libs/release/libs/graph/doc/index.html">
+Boost Graph Library.
+</a>
+
+The package also uses some other parts of Boost, most notably,
+
+<a href="http://www.boost.org/doc/libs/release/doc/html/foreach.html">
+Boost&nbsp;foreach
+</a>
+
+which was first introduced in Boost version 1.34. Therefore, Boost
+version 1.34 or later is required for use of this package.
+</p>
+
+
+
+<p>
+<a href="http://www.scons.org">
+Scons
+</a>
+
+is used as a build tool to build the accompanying documentation
+and test programs. Also, test scripts are written in
+
+<a href="http://www.python.org">
+Python
+</a>
+.
+</p>
+
+
+<H2>3. Installation</H2>
+
+<p>
+First, download the source from the
+
+<a href="http://sourceforge.net/projects/edmonds-alg">
+Sourceforge&nbsp;project&nbsp;page
+</a>.
+
+The algorithm is implemented as a single template function in C++, and
+as such, no libraries or executables need to be built. To use the
+function, just copy the files 
+
+<PRE>
+src/edmonds_optimum_branching.hpp
+src/edmonds_optimum_branching_impl.hpp 
+</PRE>
+
+to suitable locations where your compiler looks for header
+files. Under Linux, a good place is usually /urs/include. You can also
+just copy the two header files directly to the source directory of
+your program. Any source file from which a call is made should include
+the header edmonds_optimum_branching.hpp.
+</p>
+
+
+
+<p>
+If you want to build the accompanying documentation and test programs,
+you need to have Scons and Python installed (see Requirements
+above). To build and test on Linux, run the following commands from
+the root of the source directory:
+
+<PRE> 
+scons 
+scons test 
+</PRE>
+
+Or if the boost library is in a non-standard location, use the
+following commands instead:
+
+<PRE>
+scons boost=/path/to/boost/installation/root
+scons boost=/path/to/boost/installation/root test
+</PRE>
+</p>
+
+
+<p>
+Information on how to use the algorithm, see the file
+edmonds_optimum_branching.hpp. Also, a good example of usage can be
+found in the test program test/test.cpp. In the future, more examples
+may be provided (feedback from users may speed up this process).
+</p>
+
+
+<hr>
+
+<center>edmonds-alg is hosted at</center>
+<center>
+<a xmlns="" href="http://sourceforge.net">
+<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=209627&amp;type=1"
+width="88" height="31" border="0" alt="SourceForge.net Logo" />
+</a>
+</center>
+
+
+
+</DIV>
+</TABLE>
+
+
+</BODY>
+
+
+
+</HTML>
