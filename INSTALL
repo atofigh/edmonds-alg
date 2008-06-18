@@ -1,25 +1,37 @@
-Documentation instructions are also found here:
+See also the documentation at:
 
-http://edmonds-alg.sourceforge.net/index.html#installation
+      http://edmonds-alg.sourceforge.net
 
-Requirements for edmonds-alg:
+This package depends on the Boost libraries version 1.34 or later
+(http://www.boost.org)
 
-* boost
-* libxml2 ( required for the command line app )
-* doxygen ( only for -DBUILD_DOXYGEN=ON )
-* xmlto ( only for -DBUILD_DOCROOT=ON )
+The algorithm is implemented in a single templated C++ function, and
+therefore does not require building of any libraries. The function is
+implemented in two header files:
 
-This package uses the program cmake for building and packaging the software.
-To install into the directory $HOME/inst run these commands:
+src/edmonds_optimum_branching.hpp
+src/edmonds_optimum_branching_impl.hpp
 
-mkdir $HOME/inst
-cd edmonds-alg-0.9
-mkdir build
-cd build
-cmake -DCMAKE_INSTALL_PREFIX=$HOME/inst ..
+Copy these files to a suitable location where your compiler will look
+for header files, or alternatively, copy these files to your source
+directory. To use the function, simply include the header
+"edmonds_optimum_branching.hpp". Documentation on how to use the
+function is available in the header file itself. Note that the
+function is built on top of the Boost Graph Library (BGL)
+concepts. For information see the documentation of the BGL at
+http://www.boost.org.
 
-If you want to install the documentation too, you need to add the flags
- 
--DBUILD_DOXYGEN=ON  -DBUILD_DOCBOOK=ON
+There is some documentation available describing Edmonds's algorithm,
+along with some test programs and scripts. This package uses Scons
+(http://www.scons.org) as build tool. To build the documentation and
+run the tests, run the following commands in the root directory of the
+package:
 
-to the cmake command line.
+scons
+scons test
+
+If the required boost libraries are installed in a non-standard
+location, use the following commands instead:
+
+scons boost=/path/to/boost/installation/root
+scons boost=/path/to/boost/installation/root test

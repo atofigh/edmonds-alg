@@ -1,1 +1,0 @@
-cat input-msa.xml | edmonds-alg
