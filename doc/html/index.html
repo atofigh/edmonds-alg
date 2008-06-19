@@ -1,21 +1,21 @@
-<HTML>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
 
-<HEAD>
-<TITLE>Edmonds's Algorithm</TITLE>
-</HEAD>
+<head>
+<title>Edmonds's Algorithm</title>
+<style type="text/css">
+  body { color: black; background: white;
+         margin-left: 12%; margin-right: 12%; }
+  pre { font-family: monospace; }
+</style>
+</head>
 
-<BODY bgcolor="white" text="black">
+<body>
 
-<TABLE width="75%" align="center">
-<TR>
-<TD>
-<DIV align="justify">
+<h1>Edmonds's Algorithm</h1>
 
-
-
-<H1>Edmonds's Algorithm</H1>
-
-<H2>1. Introduction</H2>
+<h2>1. Introduction</h2>
 
 <p>
 The package <em>edmonds-alg</em> contains a C++-implementation of
@@ -55,7 +55,7 @@ implementation of Edmonds's algorithm.
 </p>
 
 
-<H2>2. Requirements</H2>
+<h2>2. Requirements</h2>
 
 <p>
 In order to maximize code reuse, the implementation is built on top of
@@ -68,7 +68,7 @@ Boost Graph Library.
 The package also uses some other parts of Boost, most notably,
 
 <a href="http://www.boost.org/doc/libs/release/doc/html/foreach.html">
-Boost&nbsp;foreach
+Boost foreach
 </a>
 
 which was first introduced in Boost version 1.34. Therefore, Boost
@@ -99,7 +99,7 @@ LaTeX
 </p>
 
 
-<H2>3. Installation</H2>
+<h2>3. Installation</h2>
 
 <p>
 First, download the source from the
@@ -111,12 +111,14 @@ Sourceforge&nbsp;project&nbsp;page
 The algorithm is implemented as a single template function in C++, and
 as such, no libraries or executables need to be built. To use the
 function, just copy the files 
+</p>
 
-<PRE>
+<pre>
 src/edmonds_optimum_branching.hpp
 src/edmonds_optimum_branching_impl.hpp 
-</PRE>
+</pre>
 
+<p>
 to suitable locations where your compiler looks for header
 files. Under Linux, a good place is usually /urs/include. You can also
 just copy the two header files directly to the source directory of
@@ -131,21 +133,22 @@ If you want to build the accompanying documentation and test programs,
 you need to have Scons and Python installed (see Requirements
 above). To build and test on Linux, run the following commands from
 the root of the source directory:
-
-<PRE> 
-scons 
-scons test 
-</PRE>
-
-Or if the boost library is in a non-standard location, use the
-following commands instead:
-
-<PRE>
-scons boost=/path/to/boost/installation/root
-scons boost=/path/to/boost/installation/root test
-</PRE>
 </p>
 
+<pre> 
+scons 
+scons test 
+</pre>
+
+<p>
+Or if the boost library is in a non-standard location, use the
+following commands instead:
+</p>
+
+<pre>
+scons boost=/path/to/boost/installation/root
+scons boost=/path/to/boost/installation/root test
+</pre>
 
 <p>
 Information on how to use the algorithm, see the file
@@ -157,22 +160,18 @@ may be provided (feedback from users may speed up this process).
 
 <hr>
 
-<center>edmonds-alg is hosted at</center>
-<center>
-<a xmlns="" href="http://sourceforge.net">
+<div style="text-align: center">edmonds-alg is hosted at</div>
+<div style="text-align: center">
+<a href="http://sourceforge.net">
 <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=209627&amp;type=1"
-width="88" height="31" border="0" alt="SourceForge.net Logo" />
+width="88" height="31" alt="SourceForge.net Logo" style="border: none">
 </a>
-</center>
+</div>
 
 
 
-</DIV>
-</TABLE>
-
-
-</BODY>
+</body>
 
 
 
-</HTML>
+</html>
