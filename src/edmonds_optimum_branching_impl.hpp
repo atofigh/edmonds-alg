@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <list>
 #include <boost/property_map.hpp>
 #include <boost/foreach.hpp>
 #include <boost/graph/graph_traits.hpp>
