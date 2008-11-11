@@ -32,7 +32,7 @@ namespace boost {
         complete_graph(int n_vertices) : n_vertices(n_vertices) {}
         int n_vertices;
         
-        struct edge_iterator : public input_iterator_helper<edge_iterator, int, void, void, int>
+        struct edge_iterator : public input_iterator_helper<edge_iterator, int, std::ptrdiff_t, int const *, int>
         {
             int edge_idx, n_vertices;
             
