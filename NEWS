@@ -1,0 +1,7 @@
+News in edmonds-alg 1.1.0:
+
+    [NEW] Added an example of creating a graph and calling
+          edmonds_optimum_branching in doc/examples/
+    [FIX] Fixed compilation error in test.cpp when compiling with
+          boost version 1.37
+    [FIX] Fixed compilation error caused by missing <list> header
