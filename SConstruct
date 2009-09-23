@@ -1,7 +1,7 @@
 # Set up the command line options of the SConstruct file
-opts = Options()
-opts.AddOptions(
-    PathOption('boost', 'where the root of boost is installed', '/usr'),
+opts = Variables()
+opts.AddVariables(
+    PathVariable('boost', 'where the root of boost is installed', '/usr'),
     )
 env = Environment(options = opts)
 Help(opts.GenerateHelpText(env))
