@@ -239,7 +239,7 @@ namespace detail {
             }
 
             // Save the specified roots in a random access fashion.
-            std::vector<bool> is_specified_root(max_vertex_idx);
+            std::vector<bool> is_specified_root(max_vertex_idx + 1);
             std::vector<vertex_idx_t> final_roots;
             for ( ; roots_begin != roots_end; ++roots_begin)
             {
