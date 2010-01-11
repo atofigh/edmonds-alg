@@ -301,6 +301,7 @@ namespace detail {
                         critical_edge->weight < weight_t(0);
                     if (!improves)
                     {
+                        final_roots.push_back(min[cur_root]);
                         continue;
                     }
                 }
