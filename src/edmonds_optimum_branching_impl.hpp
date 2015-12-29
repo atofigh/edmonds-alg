@@ -72,7 +72,7 @@ namespace detail {
             EdgeNode                   *parent;
             std::vector<EdgeNode *>     children;
             bool                        removed_from_F;
-            
+
             EdgeNode(const Edge &e,
                      const vertex_idx_t &s,
                      const vertex_idx_t &t,
@@ -93,7 +93,7 @@ namespace detail {
                 return source < en.source;
             }
         };
-        
+
 
 
         // The data members of the OptimumBranching class. These
@@ -104,7 +104,7 @@ namespace detail {
         TInputIterator          roots_begin;
         TInputIterator          roots_end;
         TOutputIterator         out;
-        
+
         // The constructor
         OptimumBranching(const TEdgeListGraph &g,
                          const TVertexIndexMap &index,
@@ -149,7 +149,7 @@ namespace detail {
             }
         }
 
-        
+
         // sort_edges()
         //
         // sorts a vector of EdgeNode pointers with EdgeNode.source as
@@ -219,6 +219,7 @@ namespace detail {
 
                 all_edges.push_back(EdgeNode (e, source(e, g), target(e, g), get(weight, e)));
                 max_vertex_idx = std::max(max_vertex_idx, index[target(e, g)]);
+                max_vertex_idx = std::max(max_vertex_idx, index[source(e, g)]);
             }
 
             // insert into in_edges[v] all edges entering v.
@@ -291,7 +292,7 @@ namespace detail {
                         critical_edge = en;
                     }
                 }
-                
+
                 // Do not add critical_edge if it worsens the total
                 // weight and we are not attempting to span.
                 if (!TAttemptToSpan)
@@ -305,7 +306,7 @@ namespace detail {
                         continue;
                     }
                 }
-                
+
                 // Insert critical_edge into "F" and let any edges in
                 // cycle[cur_root] be its children.
                 F.push_back(critical_edge);
@@ -398,7 +399,7 @@ namespace detail {
                         Iter e1 = in_edges[cycle_repr[i]].end();
                         Iter i2 = in_edges[cycle_repr[i-1]].begin();
                         Iter e2 = in_edges[cycle_repr[i-1]].end();
-                     
+
                         ///*
                         while (i1 != e1 || i2 != e2)
                         {
@@ -459,7 +460,7 @@ namespace detail {
                     //*/
                 }
             } // while (!roots.empty())
-            
+
             // Extract the optimum branching
 
             // Find all roots of F.
@@ -480,7 +481,7 @@ namespace detail {
                     remove_from_F(lambda[v], F_roots);
                 }
             }
-            
+
             while (!F_roots.empty())
             {
                 EdgeNode *en = F_roots.back(); F_roots.pop_back();
@@ -525,17 +526,17 @@ edmonds_optimum_branching(TEdgeListGraph &g,
     function_requires< InputIteratorConcept<TInputIterator> >();
     function_requires< OutputIteratorConcept<TOutputIterator, Edge> >();
     //!! Add the following requirements:
-    // 
+    //
     // property_traits<TVertexIndexMap>::value_type is a built-in
     // integral type, or perhaps require that it can be used to index
     // into arrays.
-    // 
+    //
     // property_traits<TWeightMap>::value_type is a numeric type that
     // handles the operations +, -, and <.
-    // 
+    //
     // TInputIterator's value type is Vertex
     // TOutputIterator's value type is Edge
-    
+
 
     ::detail::OptimumBranching<TOptimumIsMaximum, TAttemptToSpan,
         TGraphIsDense, TEdgeListGraph, TVertexIndexMap, TWeightMap,
@@ -543,7 +544,7 @@ edmonds_optimum_branching(TEdgeListGraph &g,
           optimum_branching(g, index, weight, roots_begin, roots_end, out);
     optimum_branching();
 }
-    
+
 
 
 
